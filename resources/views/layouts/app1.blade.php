@@ -11,11 +11,22 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Proyecto1</h1>
+                <h1>
+                    Proyecto1
+                    <small class="float-right">
+                    <a href="{{ route('post_path_create')}}">Crear Post</a>
+                    </small>
+                </h1>
             </div>
         </div>
-        <hr>
+        <br>
+        <br>
+        <br>
+        <div class="container">
+        @include('layouts._errors')
+        @include('layouts._messages')
         @yield('content')
+    </div>
     </div>
 </body>
 </html>

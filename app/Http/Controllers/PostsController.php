@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Post;
+use App\Comment;
+use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\UpdataPostRequest;
 
 class PostsController extends Controller
 {
@@ -13,7 +17,9 @@ class PostsController extends Controller
      */
     public function index()
     {
-        return view('posts.index');
+        $posts = Post::with('user')->orderBy('id', 'desc')->paginate(10);
+
+        return view('posts.index')->with(['posts' => $posts]);
     }
 
     /**
@@ -21,9 +27,9 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Post $post)
     {
-        //
+        return view('posts.create', compact('post'));
     }
 
     /**
@@ -32,9 +38,23 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreatePostRequest $request)
     {
-        //
+        $post = new Post;
+
+        $post->fill(
+
+            $request->only('title', 'description', 'url')
+
+        );
+
+        $post->user_id = auth()->user()->id;
+
+        $post->save();
+
+        session()->flash('message', 'Post Created!');
+
+        return redirect()->route('posts_path');
     }
 
     /**
@@ -43,9 +63,14 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        return view('/posts.show');
+        $post->load(['comments' => function ($query) {
+            $query->orderBy('id', 'desc');
+        }, 'comments.user']);
+
+        //dd($post);
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -54,9 +79,14 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+
+        if ($post->user_id != \Auth::user()->id) {
+            return redirect()->route('posts_path');
+        }
+
+        return view('/posts.edit', compact('post'));
     }
 
     /**
@@ -66,9 +96,16 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Post $post, UpdataPostRequest $request)
     {
-        //
+
+        $post->update(
+            $request->only('title', 'description', 'url')
+        );
+
+        session()->flash('message', 'Post Update!');
+
+        return redirect()->route('post_path', ['post' => $post->id]);
     }
 
     /**
@@ -77,8 +114,15 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete(Post $post)
     {
-        //
+        if ($post->user_id != \Auth::user()->id) {
+            return redirect()->route('posts_path');
+        }
+        $post->delete();
+
+        session()->flash('message1', 'Post Delete!');
+
+        return redirect()->route('posts_path');
     }
 }

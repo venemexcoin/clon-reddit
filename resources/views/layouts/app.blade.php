@@ -18,6 +18,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <script src="https://kit.fontawesome.com/3226d1ef96.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="app">
@@ -33,7 +35,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li>
+                        <a href="{{ route('post_path_create')}}">Crear Postt</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -72,8 +76,15 @@
             </div>
         </nav>
 
-        <main class="py-4">
-            @yield('content')
+        <br>
+        <br>
+        <br>
+                <div class="container">
+                @include('layouts._errors')
+                @include('layouts._messages')
+                @yield('content')
+            </div>
+            </div>
         </main>
     </div>
 </body>
