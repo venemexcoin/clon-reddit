@@ -1958,17 +1958,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var VOTE_UP = 1;
 var VOTE_DOWN = -1;
 var NO_VOTE = 0;
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
+    isAuthenticated: {
+      prop: Boolean
+    },
     postId: {
       prop: Number
     },
     currentVotes: {
       prop: Number,
-      "default": 0
+      "default": NO_VOTE
     },
     userVote: {
       prop: Number,
@@ -1977,7 +1990,8 @@ var NO_VOTE = 0;
   },
   data: function data() {
     return {
-      internalUserVote: NO_VOTE
+      internalUserVote: NO_VOTE,
+      internalCurrentVotes: 0
     };
   },
   computed: {
@@ -1988,7 +2002,7 @@ var NO_VOTE = 0;
       return this.internalUserVote === VOTE_DOWN;
     },
     totalVotes: function totalVotes() {
-      return this.currentVotes + this.internalUserVote;
+      return this.internalCurrentVotes + this.internalUserVote;
     }
   },
   methods: {
@@ -1999,6 +2013,10 @@ var NO_VOTE = 0;
       this.vote(VOTE_DOWN);
     },
     vote: function vote(_vote) {
+      if (!this.isAuthenticated) {
+        return;
+      }
+
       if (this.internalUserVote === _vote) {
         this.internalUserVote = NO_VOTE;
       } else {
@@ -2012,6 +2030,7 @@ var NO_VOTE = 0;
   },
   mounted: function mounted() {
     this.internalUserVote = this.userVote;
+    this.internalCurrentVotes = this.currentVotes - this.internalUserVote;
   }
 });
 
@@ -37440,6 +37459,7 @@ var render = function() {
       {
         staticClass: "btn",
         class: { "btn-info": _vm.didVoteUp },
+        attrs: { disabled: !_vm.isAuthenticated },
         on: { click: _vm.voteUp }
       },
       [_c("i", { staticClass: "fas fa-thumbs-up" })]
@@ -37452,6 +37472,7 @@ var render = function() {
       {
         staticClass: "btn",
         class: { "btn-info": _vm.didVoteDown },
+        attrs: { disabled: !_vm.isAuthenticated },
         on: { click: _vm.voteDown }
       },
       [_vm._m(0)]

@@ -25,9 +25,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::name('delete_post_path')->delete('post/{post}', 'postsController@delete');
 
-    Route::name('create_comment_path')->post('/posts/{post}/comments', 'PostsCommentsController@create');
-
     Route::name('vote_post_path')->post('/posts/{post}/vote', 'PostVotesController@store');
+
+    Route::name('create_comment_path')->post('/posts/{post}/comments', 'PostsCommentsController@create');
 });
 
 

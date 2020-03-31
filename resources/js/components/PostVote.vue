@@ -1,12 +1,22 @@
 <template>
   <div class="btn-group-vertical">
-    <button class="btn" @click="voteUp" :class="{'btn-info': didVoteUp}">
+    <button
+      class="btn"
+      @click="voteUp"
+      :class="{'btn-info': didVoteUp}"
+      :disabled="!isAuthenticated"
+    >
       <i class="fas fa-thumbs-up"></i>
     </button>
 
     <button class="btn">{{ totalVotes }}</button>
 
-    <button class="btn" @click="voteDown" :class="{'btn-info': didVoteDown}">
+    <button
+      class="btn"
+      @click="voteDown"
+      :class="{'btn-info': didVoteDown}"
+      :disabled="!isAuthenticated"
+    >
       <span>
         <i class="fas fa-thumbs-down"></i>
       </span>
@@ -22,13 +32,17 @@ const NO_VOTE = 0;
 
 export default {
   props: {
+    isAuthenticated: {
+      prop: Boolean
+    },
+
     postId: {
       prop: Number
     },
 
     currentVotes: {
       prop: Number,
-      default: 0
+      default: NO_VOTE
     },
 
     userVote: {
@@ -39,7 +53,8 @@ export default {
 
   data() {
     return {
-      internalUserVote: NO_VOTE
+      internalUserVote: NO_VOTE,
+      internalCurrentVotes: 0
     };
   },
 
@@ -52,7 +67,7 @@ export default {
     },
 
     totalVotes() {
-      return this.currentVotes + this.internalUserVote;
+      return this.internalCurrentVotes + this.internalUserVote;
     }
   },
 
@@ -66,6 +81,10 @@ export default {
     },
 
     vote(vote) {
+      if (!this.isAuthenticated) {
+        return;
+      }
+
       if (this.internalUserVote === vote) {
         this.internalUserVote = NO_VOTE;
       } else {
@@ -81,6 +100,8 @@ export default {
 
   mounted() {
     this.internalUserVote = this.userVote;
+
+    this.internalCurrentVotes = this.currentVotes - this.internalUserVote;
   }
 };
 </script>

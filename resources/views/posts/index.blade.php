@@ -9,11 +9,15 @@
     <div class="col-md-1">
 
         <post-vote
+
+        :is-authenticated="{!! json_encode(Auth::user()!==null)!!}"
+
         :post-id="{{ $post->id }}"
 
         :current-votes="{{ $post->totalVotes() }}"
 
-        :user-vote="0"
+        :user-vote="{{ $post->userVote(Auth::user() )}}"
+
         ></post-vote>
     </div>
 

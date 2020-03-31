@@ -9,6 +9,8 @@ class PostVotesController extends Controller
 {
     public function store(Request $request, $postId)
     {
+
+
         $vote = (int) $request->get('vote');
 
         $userId = \Auth::user()->id;
@@ -20,7 +22,6 @@ class PostVotesController extends Controller
         // si no existe creamos el voto
 
         if (!$postVote->exists) {
-
             $postVote->vote = $vote;
             $postVote->save();
         } else {
@@ -31,9 +32,6 @@ class PostVotesController extends Controller
 
         $post = $postVote->post;
 
-
-        return response()->json([
-            'vote_total' = $post->totalVotes()
-        ]);
+        return response()->json(['vote_total' => $post->totalVotes()]);
     }
 }
